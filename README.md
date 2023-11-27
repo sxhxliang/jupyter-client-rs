@@ -13,5 +13,5 @@ Add the following to your Cargo.toml:
 
 ```toml
 [dependencies]
-jupyter-client = { git = "https://gitlab.com/srwalker101/rust-jupyter-client.git", branch = "dev" }
+jupyter-client = { git = "https://github.com/sxhxliang/jupyter-client-rs.git", branch = "dev" }
 ```
