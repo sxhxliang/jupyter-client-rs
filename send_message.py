@@ -11,19 +11,15 @@ import uuid
 import pprint
 import argparse
 
-
 PYTHON3 = sys.version_info.major == 3
 engine_id = str(uuid.uuid4())
 DELIM = b"<IDS|MSG>"
 
-
 def msg_id():
     return str(uuid.uuid4())
 
-
 def str_to_bytes(s):
     return s.encode("ascii") if PYTHON3 else bytes(s)
-
 
 def new_header(msg_type):
     return {
@@ -34,9 +30,6 @@ def new_header(msg_type):
         "msg_type": msg_type,
         # "version": "5.0",
     }
-
-
-
 
 class Frontend(object):
 

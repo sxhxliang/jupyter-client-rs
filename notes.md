@@ -22,6 +22,7 @@ These are the steps to add a new Command/Response pair:
 - [x] `is_complete_request`
 - [x] `shutdown_request`
 - [x] `comm_info_request`
+- [x] `async execute code`
 - [ ] `interrupt_request`
 
 ## Kernel -> Client (SHELL)
@@ -43,6 +44,7 @@ These are the steps to add a new Command/Response pair:
 - [x] `error`
 - [x] `execute_result`
 - [x] `clear_output`
+- [x] `async result`
 - [ ] `display_data`
 - [ ] `update_display_data`
 

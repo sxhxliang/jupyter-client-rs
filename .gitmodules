@@ -1,3 +1,0 @@
-[submodule "jupyter_client"]
-	path = jupyter_client
-	url = https://github.com/jupyter/jupyter_client

@@ -7,9 +7,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [Unreleased]
 
 ### Added
+
+## [0.1.1] - 2023-12-04
+- upgrade dependencies to latest version
+- add async_run_code example
+
 ### Changed
 
-- Switch to Rust 2018 🎉 [#24](https://gitlab.com/srwalker101/rust-jupyter-client/merge_requests/24)
+- Switch to Rust 2021 🎉 [#c04405](https://github.com/sxhxliang/jupyter-client-rs/commit/c044058d6826fcb97fdb76b4ce09de34ff500886)
 
 ### Removed
 
