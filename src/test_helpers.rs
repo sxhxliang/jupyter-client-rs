@@ -1,38 +1,105 @@
-use crypto_mac::MacResult;
+use crypto_mac::{Mac, Output};
 use digest::generic_array::typenum::U64;
-use generic_array::GenericArray;
-use hmac::Mac;
+use digest::generic_array::GenericArray;
+use hmac::Mac as Hmac;
 
 #[derive(Debug, Clone)]
 pub(crate) struct FakeAuth;
 
 static KEY: &[u8] = b"foobar0000000000000000000000000000000000000000000000000000000000";
+impl Hmac for FakeAuth {
+    fn new(key: &digest::Key<Self>) -> Self
+    where
+        Self: digest::KeyInit {
+            
+        todo!()
+    }
+
+    fn new_from_slice(key: &[u8]) -> Result<Self, digest::InvalidLength>
+    where
+        Self: digest::KeyInit {
+        todo!()
+    }
+
+    fn update(&mut self, data: &[u8]) {
+        todo!()
+    }
+
+    fn chain_update(self, data: impl AsRef<[u8]>) -> Self {
+        todo!()
+    }
+
+    fn finalize(self) -> digest::CtOutput<Self> {
+        todo!()
+    }
+
+    fn finalize_reset(&mut self) -> digest::CtOutput<Self>
+    where
+        Self: digest::FixedOutputReset {
+        todo!()
+    }
+
+    fn reset(&mut self)
+    where
+        Self: digest::Reset {
+        todo!()
+    }
+
+    fn verify(self, tag: &digest::Output<Self>) -> Result<(), digest::MacError> {
+        todo!()
+    }
+
+    fn verify_reset(&mut self, tag: &digest::Output<Self>) -> Result<(), digest::MacError>
+    where
+        Self: digest::FixedOutputReset {
+        todo!()
+    }
+
+    fn verify_slice(self, tag: &[u8]) -> Result<(), digest::MacError> {
+        todo!()
+    }
+
+    fn verify_slice_reset(&mut self, tag: &[u8]) -> Result<(), digest::MacError>
+    where
+        Self: digest::FixedOutputReset {
+        todo!()
+    }
+
+    fn verify_truncated_left(self, tag: &[u8]) -> Result<(), digest::MacError> {
+        todo!()
+    }
+
+    fn verify_truncated_right(self, tag: &[u8]) -> Result<(), digest::MacError> {
+        todo!()
+    }
+}
 
 impl Mac for FakeAuth {
     type OutputSize = U64;
-    type KeySize = U64;
 
-    fn new(_keys: &GenericArray<u8, Self::KeySize>) -> Self {
-        FakeAuth {}
+    fn update(&mut self, data: &[u8]) {
+        todo!()
     }
 
-    fn input(&mut self, _data: &[u8]) {}
-    fn reset(&mut self) {}
-    fn result(self) -> MacResult<Self::OutputSize> {
-        MacResult::new(GenericArray::clone_from_slice(KEY))
+    fn reset(&mut self) {
+        todo!()
+    }
+
+    fn finalize(self) -> crypto_mac::Output<Self> {
+        Output::new(GenericArray::from_slice(KEY).to_owned())
     }
 }
 
 impl FakeAuth {
     pub(crate) fn create() -> FakeAuth {
-        FakeAuth::new_varkey(KEY).expect("creating fake auth object")
+        FakeAuth{}
     }
 }
 
 pub(crate) fn expected_signature() -> String {
     let auth = FakeAuth::create();
-    let res = auth.result();
-    let code = res.code();
+    let res = auth.finalize();
+    let code = res.into_bytes();
     let encoded = hex::encode(code);
     encoded
 }
