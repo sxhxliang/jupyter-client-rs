@@ -132,7 +132,7 @@ pub enum Command {
 }
 
 impl Command {
-    pub(crate) fn into_wire<M: Mac + Debug>(self, auth: M) -> Result<WireMessage<M>> {
+    pub(crate) fn into_wire<M: Mac + Debug + Clone>(self, auth: M) -> Result<WireMessage<M>> {
         let msg = match self {
             Command::KernelInfo => {
                 let header = Header::new("kernel_info_request");

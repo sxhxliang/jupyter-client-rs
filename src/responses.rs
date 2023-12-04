@@ -8,7 +8,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 
 /// Link pointing to some help text.
-#[derive(Deserialize, Debug, PartialEq, Eq)]
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq,)]
 pub struct HelpLink {
     /// The text to display.
     pub text: String,
@@ -26,7 +26,7 @@ There are two responses available:
 These two responses are then wrapped into a single `Response` type so that functions can return any
 response.
 */
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Response {
     /// Response from sending a shell message.
     Shell(ShellResponse),
@@ -35,7 +35,7 @@ pub enum Response {
 }
 
 /// Responses from sending shell messages.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ShellResponse {
     /// Response from asking for information about the running kernel.
     KernelInfo {
@@ -128,7 +128,7 @@ pub enum ShellResponse {
 }
 
 /// Responses from the IOPub channel.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum IoPubResponse {
     /// Response from the kernel showing the current kernel status.
     Status {
@@ -209,8 +209,11 @@ pub enum IoPubResponse {
     },
 }
 
+unsafe impl Send for IoPubResponse {
+    
+}
 /// Content for a KernelInfo response.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct KernelInfoContent {
     /// Status of the request.
     pub status: Status,
@@ -229,7 +232,7 @@ pub struct KernelInfoContent {
 }
 
 /// Information about the language of code for the kernel.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct LanguageInfo {
     /// Name of the programming language the kernel implements.
     pub name: String,
@@ -249,7 +252,7 @@ pub struct LanguageInfo {
 }
 
 /// Information from code execution.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct ExecuteReplyContent {
     /// Status of the request.
     pub status: Status,
@@ -270,14 +273,14 @@ pub struct ExecuteReplyContent {
 }
 
 /// Response from the IOPub status messages
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone, Copy)]
 pub struct StatusContent {
     /// The state of the kernel.
     pub execution_state: ExecutionState,
 }
 
 /// Response when code is input to the kernel.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct ExecuteInputContent {
     /// The code that was run.
     pub code: String,
@@ -286,7 +289,7 @@ pub struct ExecuteInputContent {
 }
 
 /// Response from inspecting code
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct InspectContent {
     /// Status of the request.
     pub status: Status,
@@ -299,7 +302,7 @@ pub struct InspectContent {
 }
 
 /// Response when printing to stdout/stderr.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct StreamContent {
     /// Type of the stream.
     pub name: StreamType,
@@ -308,7 +311,7 @@ pub struct StreamContent {
 }
 
 /// Content of an error response.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct ErrorContent {
     /// Exception name as a string.
     pub ename: String,
@@ -319,7 +322,7 @@ pub struct ErrorContent {
 }
 
 /// Content when asking for code completion.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct CompleteContent {
     /// Status of the request.
     pub status: Status,
@@ -334,7 +337,7 @@ pub struct CompleteContent {
 }
 
 /// Content when asking for history entries.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct HistoryContent {
     /// Status of the request.
     pub status: Status,
@@ -343,7 +346,7 @@ pub struct HistoryContent {
 }
 
 /// Response when asking the kernel to shutdown.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct ShutdownContent {
     /// Status of the request.
     pub status: Status,
@@ -352,7 +355,7 @@ pub struct ShutdownContent {
 }
 
 /// Response when asking for comm info.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct CommInfoContent {
     /// Status of the request.
     pub status: Status,
@@ -361,7 +364,7 @@ pub struct CommInfoContent {
 }
 
 /// Response when requesting to execute code.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct ExecuteResultContent {
     /// Global execution count.
     pub execution_count: i64,
@@ -372,7 +375,7 @@ pub struct ExecuteResultContent {
 }
 
 /// Response when the kernel asks the client to clear the output.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct ClearOutputContent {
     /// Wait to clear the output until new output is available.
     pub wait: bool,
@@ -380,7 +383,7 @@ pub struct ClearOutputContent {
 
 /// Response when the kernel asks the client to display some data (@l-yc)
 /// Adapted directly from https://jupyter-protocol.readthedocs.io/en/latest/messaging.html
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct DisplayDataContent {
     /// The data dict contains key/value pairs, where the keys are MIME
     /// types and the values are the raw data of the representation in that
@@ -397,7 +400,7 @@ pub struct DisplayDataContent {
 }
 
 /// State of the kernel.
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Debug, PartialEq, Copy, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum ExecutionState {
     /// Running code.
@@ -409,7 +412,7 @@ pub enum ExecutionState {
 }
 
 /// Status of if entered code is complete (i.e. does not need another " character).
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum IsCompleteStatus {
     /// Entered code is complete.
@@ -423,7 +426,7 @@ pub enum IsCompleteStatus {
 }
 
 /// Type of stream, either stdout or stderr.
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "lowercase")]
 #[allow(missing_docs)]
 pub enum StreamType {
@@ -432,7 +435,7 @@ pub enum StreamType {
 }
 
 /// Status of the request.
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "lowercase")]
 #[allow(missing_docs)]
 pub enum Status {
@@ -977,7 +980,7 @@ mod tests {
             .to_string()
             .into_bytes(),
         ];
-        let msg = WireMessage::from_raw_response(raw_response, auth.clone()).unwrap();
+        let msg = WireMessage::from_raw_response(raw_response, auth).unwrap();
         let response = msg.into_response().unwrap();
         match response {
             Response::Shell(ShellResponse::CommInfo {

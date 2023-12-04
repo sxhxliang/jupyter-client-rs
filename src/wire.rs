@@ -15,7 +15,7 @@ type Part = Vec<u8>;
 static DELIMITER: &[u8] = b"<IDS|MSG>";
 
 #[derive(Debug)]
-pub(crate) struct WireMessage<M: Mac + Debug> {
+pub(crate) struct WireMessage<M: Mac + Debug + Clone> {
     pub(crate) header: Part,
     pub(crate) parent_header: Part,
     pub(crate) metadata: Part,
@@ -23,7 +23,7 @@ pub(crate) struct WireMessage<M: Mac + Debug> {
     pub(crate) auth: M,
 }
 
-impl<M: Mac + Debug> WireMessage<M> {
+impl<M: Mac + Debug + Clone> WireMessage<M> {
     pub(crate) fn from_raw_response(raw: Vec<Vec<u8>>, auth: M) -> Result<Self> {
         trace!("raw response: {:?}", raw);
         let delim_idx = raw
@@ -53,7 +53,7 @@ impl<M: Mac + Debug> WireMessage<M> {
             parent_header: msg_frames[1].clone(),
             metadata: msg_frames[2].clone(),
             content: msg_frames[3].clone(),
-            auth: auth.clone(),
+            auth,
         })
     }
 
@@ -197,7 +197,7 @@ impl<M: Mac + Debug> WireMessage<M> {
         buf.push(self.metadata);
         buf.push(self.content);
 
-        let signature = sign(buf.as_slice(), self.auth.clone());
+        let signature = sign(buf.as_slice(), self.auth);
 
         let mut result = Vec::with_capacity(6);
         result.push(DELIMITER.to_vec());
